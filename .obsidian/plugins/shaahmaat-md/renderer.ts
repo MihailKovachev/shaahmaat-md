@@ -3,7 +3,16 @@ import { Chess, PAWN } from 'chess.js';
 
 import { App } from 'obsidian';
 
+export enum BoardOrientation {
+    Black,
+    White
+}
+
+const COLUMNS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
 export default class Renderer {
+
     app: App;
 
     lightSquareColor: string;
@@ -63,11 +72,11 @@ export default class Renderer {
      * @param {string} lightSquareColor - the colour (in hex format '#rrggbb') used for light squares.
      * @param {string} darkSquareColor - the colour (in hex format '#rrggbb') used for dark squares.
      */
-    public emptyBoard(size: number = 256): HTMLDivElement {
+    public emptyBoard(orientation: BoardOrientation, size: number = 256): HTMLDivElement {
 
         let squareSide = size / 8;
 
-        let chessboardDiv = createDiv({ cls: 'shaahmaat-chessboard-div', attr: {"style": "width: " + size + "px; height: " + size + "px;"} });
+        let chessboardDiv = createDiv({ cls: 'shaahmaat-chessboard-div', attr: { "style": "width: " + size + "px; height: " + size + "px;" } });
         let chessboardTable = chessboardDiv.createEl('table', { cls: 'shaahmaat-chessboard-table' })
 
         for (let i = 0; i < 8; ++i) {
@@ -76,12 +85,18 @@ export default class Renderer {
 
             for (let j = 0; j < 8; ++j) {
 
-                if ((i + j) % 2 == 0) {
-                    row.createEl('td', { cls: 'shaahmaat-chessboard-square', attr: { "style": "background-color:" + this.lightSquareColor } });
-                }
-                else {
-                    row.createEl('td', { cls: 'shaahmaat-chessboard-square', attr: { "style": "background-color:" + this.darkSquareColor } });
-                }
+                let backgroundColor = (i + j) % 2 == 0 ? this.lightSquareColor : this.darkSquareColor;
+                let columnCoord = orientation === BoardOrientation.Black ? COLUMNS[7 - j] : COLUMNS[j]; 
+                let rowCoord = orientation === BoardOrientation.Black ? ROWS[i] : ROWS[7 - i];
+
+                row.createEl('td',
+                    {
+                        cls: 'shaahmaat-chessboard-square',
+                        attr: {
+                            "style": "background-color:" + backgroundColor,
+                            "data-square-coordinates": columnCoord + rowCoord,
+                            }
+                    });
             }
         }
 

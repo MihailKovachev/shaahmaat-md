@@ -1,7 +1,7 @@
 import { Chess } from 'chess.js';
 import { App, Editor, HexString, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-import Renderer from 'renderer';
+import Renderer, { BoardOrientation } from 'renderer';
 
 // Remember to rename these classes and interfaces!
 
@@ -54,8 +54,8 @@ export default class ShaahMaatPlugin extends Plugin {
 			el.createEl('p', { text: err, cls: "shaahmaat-error"} );
 		}
 
-		el.appendChild(this.renderer.emptyBoard(128));
-		
+		el.appendChild(this.renderer.emptyBoard(BoardOrientation.Black, 256));
+		el.appendChild(this.renderer.emptyBoard(BoardOrientation.White, 256));
 	}
 
 	postProcessPGN(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
@@ -67,7 +67,6 @@ export default class ShaahMaatPlugin extends Plugin {
 		} catch(err){
 			el.createEl('p', { text: err, cls: "shaahmaat-error"} );
 		}
-
 	}
 
 	onunload() {
