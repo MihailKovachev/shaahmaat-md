@@ -66,6 +66,5 @@ export class ShaahMaatSettingTab extends PluginSettingTab {
 
 				return dropDown;
 			});
-
 	}
 }

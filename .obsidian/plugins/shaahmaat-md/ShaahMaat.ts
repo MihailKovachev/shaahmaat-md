@@ -180,4 +180,7 @@ export default class ShaahMaat {
         return chessboard;
     }
 
+    public renderError(err: Error): HTMLElement {
+        return createEl('p', { cls: "shaahmaat-error", text: "Error: " + err.stack + " " + err.message });
+    }
 }
