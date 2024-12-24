@@ -1,25 +1,12 @@
 import { Chess } from 'chess.js';
 import { App, Editor, HexString, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-import Renderer, { BoardOrientation } from 'renderer';
-
-// Remember to rename these classes and interfaces!
-
-interface ShaahMaatSettings {
-	lightSquareColor: string,
-	darkSquareColor: string,
-	chessSet: string
-}
-
-const DEFAULT_SETTINGS: ShaahMaatSettings = {
-	lightSquareColor: '#ffce9e',
-	darkSquareColor: '#d18b47',
-	chessSet: 'Cburnett'
-}
+import ShaahMaat, { BoardOrientation } from 'ShaahMaat';
+import { DEFAULT_SETTINGS, ShaahMaatSettings, ShaahMaatSettingTab } from 'ShaahMaatSettings';
 
 export default class ShaahMaatPlugin extends Plugin {
 	settings: ShaahMaatSettings;
-	renderer: Renderer;
+	renderer: ShaahMaat;
 
 	async onload() {
 
@@ -36,7 +23,7 @@ export default class ShaahMaatPlugin extends Plugin {
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 
-		this.renderer = new Renderer(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor);
+		this.renderer = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor);
 		this.renderer.init(this.settings.chessSet);
 
 		this.registerMarkdownCodeBlockProcessor('chess-fen', this.postProcessFEN.bind(this));
@@ -54,7 +41,7 @@ export default class ShaahMaatPlugin extends Plugin {
 			el.createEl('p', { text: err, cls: "shaahmaat-error"} );
 		}
 
-		el.appendChild(this.renderer.buildPositionHtml(chess.board(), BoardOrientation.White));
+		el.appendChild(this.renderer.boardWithPosition(chess.board(), BoardOrientation.White));
 	}
 
 	postProcessPGN(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
@@ -67,7 +54,7 @@ export default class ShaahMaatPlugin extends Plugin {
 			el.createEl('p', { text: err, cls: "shaahmaat-error"} );
 		}
 
-		el.appendChild(this.renderer.buildPositionHtml(chess.board(), BoardOrientation.White));
+		el.appendChild(this.renderer.boardWithPosition(chess.board(), BoardOrientation.White));
 	}
 
 	onunload() {
@@ -82,59 +69,3 @@ export default class ShaahMaatPlugin extends Plugin {
 	}
 }
 
-class ShaahMaatSettingTab extends PluginSettingTab {
-	plugin: ShaahMaatPlugin;
-	availableChessSets: string[];
-
-	constructor(app: App, plugin: ShaahMaatPlugin, availableChessSets: string[]) {
-		super(app, plugin);
-		this.plugin = plugin;
-		this.availableChessSets = availableChessSets;
-	}
-
-	display(): void {
-		const { containerEl } = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName('Light square colour')
-			.setDesc('The colour used for light squares on the board.')
-			.addColorPicker(colorPicker => colorPicker
-				.setValue(this.plugin.settings.lightSquareColor)
-				.onChange(async (value) => {
-					this.plugin.settings.lightSquareColor = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName('Dark square colour')
-			.setDesc('The colour used for dark squares on the board.')
-			.addColorPicker(colorPicker => colorPicker
-				.setValue(this.plugin.settings.darkSquareColor)
-				.onChange(async (value) => {
-					this.plugin.settings.darkSquareColor = value;
-					await this.plugin.saveSettings();
-				}));
-
-		new Setting(containerEl)
-			.setName('Chess set')
-			.setDesc('The chess set to use for the pieces.')
-			.addDropdown(dropDown => {
-
-				this.availableChessSets.forEach(function (chessSet) {
-					dropDown.addOption(chessSet, chessSet);
-				});
-
-				dropDown
-					.setValue(this.plugin.settings.chessSet)
-					.onChange(async (value) => {
-						this.plugin.settings.chessSet = value;
-						await this.plugin.saveSettings();
-					});
-
-				return dropDown;
-			});
-
-	}
-}

@@ -10,7 +10,7 @@ export enum BoardOrientation {
 const COLUMNS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-export default class Renderer {
+export default class ShaahMaat {
 
     app: App;
 
@@ -52,18 +52,11 @@ export default class Renderer {
 
     }
 
-    /**
-     * Constructs an SVG image of a chess board.
-     * @param {number} size - the length (in pixels) of the board's side.
-     * @param {string} lightSquareColor - the colour (in hex format '#rrggbb') used for light squares.
-     * @param {string} darkSquareColor - the colour (in hex format '#rrggbb') used for dark squares.
-     */
     public emptyBoard(orientation: BoardOrientation = BoardOrientation.White, size: number = 256): HTMLDivElement {
 
         let squareSide = size / 8;
 
         let chessboardDiv = createDiv({ cls: 'shaahmaat-chessboard', attr: { "style": "width: " + size + "px; height: " + size + "px;" } });
-        // let chessboardTable = chessboardDiv.createEl('table', { cls: 'shaahmaat-chessboard-table' });
 
         for (let i = 0; i < 8; ++i) {
 
@@ -89,14 +82,14 @@ export default class Renderer {
         return chessboardDiv;
     }
 
-    public buildPositionHtml(board: ({
+    public boardWithPosition(position: ({
         square: Square;
         type: PieceSymbol;
         color: Color;
     } | null)[][], orientation = BoardOrientation.White, size: number = 256): HTMLDivElement {
         let chessboard = this.emptyBoard(orientation, size);
 
-        if (board === null) {
+        if (position === null) {
             return chessboard;
         }
 
@@ -107,16 +100,16 @@ export default class Renderer {
 
         for (let i = 0; i < 8; ++i) {
             for (let j = 0; j < 8; ++j) {
-                if (board[i][j] === null) {
+                if (position[i][j] === null) {
                     continue;
                 }
-                let column = board[i][j]?.square.charAt(0);
-                let row = board[i][j]?.square.charAt(1);
+                let column = position[i][j]?.square.charAt(0);
+                let row = position[i][j]?.square.charAt(1);
 
-                let color = board[i][j]?.color === 'w' ? "light" : "dark";
+                let color = position[i][j]?.color === 'w' ? "light" : "dark";
                 let piece = "";
 
-                switch (board[i][j]?.type) {
+                switch (position[i][j]?.type) {
                     case 'b': {
                         piece = "bishop";
                         break;
@@ -148,7 +141,7 @@ export default class Renderer {
 
                         let squares = rows[8 - parseInt(row!)].getElementsByClassName('shaahmaat-chessboard-square');
                         for (let k = 0; k < squares.length; ++k) {
-                            if (squares[k].getAttribute('data-square-coordinates') === board[i][j]?.square) {
+                            if (squares[k].getAttribute('data-square-coordinates') === position[i][j]?.square) {
                                 let pieceSvg = this.pieces.get(piece + "_" + color);
 
                                 let svgEl = domParser.parseFromString(pieceSvg!, "image/svg+xml").documentElement;
@@ -167,7 +160,7 @@ export default class Renderer {
 
                         let squares = rows[parseInt(row!) - 1].getElementsByClassName('shaahmaat-chessboard-square');
                         for (let k = 0; k < squares.length; ++k) {
-                            if (squares[k].getAttribute('data-square-coordinates') === board[i][j]?.square) {
+                            if (squares[k].getAttribute('data-square-coordinates') === position[i][j]?.square) {
                                 let pieceSvg = this.pieces.get(piece + "_" + color);
 
                                 let svgEl = domParser.parseFromString(pieceSvg!, "image/svg+xml").documentElement;
@@ -182,12 +175,9 @@ export default class Renderer {
                         break;
                     }
                 }
-
             }
         }
-
         return chessboard;
-
     }
 
 }
