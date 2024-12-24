@@ -12,8 +12,8 @@ interface ShaahMaatSettings {
 }
 
 const DEFAULT_SETTINGS: ShaahMaatSettings = {
-	lightSquareColor: '#ffffff',
-	darkSquareColor: '#000000',
+	lightSquareColor: '#ffce9e',
+	darkSquareColor: '#d18b47',
 	chessSet: 'Cburnett'
 }
 
@@ -54,8 +54,7 @@ export default class ShaahMaatPlugin extends Plugin {
 			el.createEl('p', { text: err, cls: "shaahmaat-error"} );
 		}
 
-		el.appendChild(this.renderer.emptyBoard(BoardOrientation.Black, 256));
-		el.appendChild(this.renderer.emptyBoard(BoardOrientation.White, 256));
+		el.appendChild(this.renderer.buildPositionHtml(chess.board(), BoardOrientation.White));
 	}
 
 	postProcessPGN(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
@@ -67,6 +66,8 @@ export default class ShaahMaatPlugin extends Plugin {
 		} catch(err){
 			el.createEl('p', { text: err, cls: "shaahmaat-error"} );
 		}
+
+		el.appendChild(this.renderer.buildPositionHtml(chess.board(), BoardOrientation.White));
 	}
 
 	onunload() {

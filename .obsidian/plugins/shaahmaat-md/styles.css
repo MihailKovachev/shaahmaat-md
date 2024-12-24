@@ -12,20 +12,23 @@ If your plugin does not need CSS, delete this file.
 }
 
 .shaahmaat-chessboard-row {
-    border: none;
+    width: 100%;
+    height: 12.5%;
 }
 
 .shaahmaat-chessboard-square {
-    border: none;
-}
-
-.shaahmaat-chessboard-div {
-
-}
-
-.shaahmaat-chessboard-table {
-    table-layout: fixed;
-    width: 100%;
+    display: inline-block;
+    width: 12.5%;
     height: 100%;
-    border: none;
+    padding: 0px !important;
+    border: none !important;
+}
+
+.shaahmaat-chessboard {
+    box-sizing: content-box;
+
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
