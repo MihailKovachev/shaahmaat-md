@@ -13,8 +13,6 @@ export default class ShaahMaatPlugin extends Plugin {
 
 	async onload() {
 
-		console.log('ShaahMaat is loading...');
-
 		await this.loadSettings();
 
 		let chessSetsFolder = (this.app.vault.configDir.normalize() + '/plugins/shaahmaat-md/assets/chess_sets').normalize();

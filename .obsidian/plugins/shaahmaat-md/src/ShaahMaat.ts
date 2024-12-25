@@ -68,14 +68,15 @@ export default class ShaahMaat {
                 let columnCoord = orientation === BoardOrientation.Black ? COLUMNS[7 - j] : COLUMNS[j];
                 let rowCoord = orientation === BoardOrientation.Black ? ROWS[i] : ROWS[7 - i];
 
-                row.createDiv(
+                let square = row.createDiv(
                     {
                         cls: 'shaahmaat-chessboard-square',
                         attr: {
-                            "style": "background-color:" + backgroundColor,
                             "data-square-coordinates": columnCoord + rowCoord,
                         }
                     });
+                    
+                square.style.setProperty("--square-background-color", backgroundColor);
             }
         }
 
