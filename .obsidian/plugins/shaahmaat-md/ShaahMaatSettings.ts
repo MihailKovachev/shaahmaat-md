@@ -2,15 +2,15 @@ import ShaahMaatPlugin from "main";
 import { App, PluginSettingTab, Setting } from "obsidian";
 
 export interface ShaahMaatSettings {
-    lightSquareColor: string,
-    darkSquareColor: string,
-    chessSet: string
+	lightSquareColor: string,
+	darkSquareColor: string,
+	chessSet: string
 }
 
 export const DEFAULT_SETTINGS: ShaahMaatSettings = {
-    lightSquareColor: '#ffce9e',
-    darkSquareColor: '#d18b47',
-    chessSet: 'Cburnett'
+	lightSquareColor: '#ffce9e',
+	darkSquareColor: '#d18b47',
+	chessSet: 'Cburnett'
 }
 
 export class ShaahMaatSettingTab extends PluginSettingTab {
