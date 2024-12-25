@@ -144,9 +144,12 @@ export default class ShaahMaat {
                                 let pieceSvg = this.pieces.get(piece + "_" + color);
 
                                 let svgEl = domParser.parseFromString(pieceSvg!, "image/svg+xml").documentElement;
+
+                                // Set the viewBox so that the entire SVG image is rendered. 
+                                svgEl.setAttribute("viewBox", "0 0 " + svgEl.getAttribute("width")! + " " + svgEl.getAttribute("height")!);
+
                                 svgEl.setAttribute("width", "100%");
                                 svgEl.setAttribute("height", "100%");
-                                svgEl.setAttribute("viewBox", "0 0 45 45");
 
                                 squares[k].appendChild(svgEl);
                             }
@@ -163,9 +166,12 @@ export default class ShaahMaat {
                                 let pieceSvg = this.pieces.get(piece + "_" + color);
 
                                 let svgEl = domParser.parseFromString(pieceSvg!, "image/svg+xml").documentElement;
+
+                                // Set the viewBox so that the entire SVG image is rendered. 
+                                svgEl.setAttribute("viewBox", "0 0 " + svgEl.getAttribute("width")! + " " + svgEl.getAttribute("height")!);
+
                                 svgEl.setAttribute("width", "100%");
                                 svgEl.setAttribute("height", "100%");
-                                svgEl.setAttribute("viewBox", "0 0 45 45");
 
                                 squares[k].appendChild(svgEl);
                             }
