@@ -32,38 +32,12 @@ export default class ShaahMaatPlugin extends Plugin {
 
 	postProcessShaahMaat(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
 
-		try{
+		try {
 			let parsedShaahMaat = ShaahMaatParser.parseShaahMaat(source);
-
-			let orientation = BoardOrientation.White;
-			let format = "";
-
-			for(let i = 0; i < parsedShaahMaat.headers.length; ++i)
-			{
-				if (parsedShaahMaat.headers[i].name === "orientation") {
-					switch(parsedShaahMaat.headers[i].val) {
-						case "white": {
-							orientation = BoardOrientation.White;
-							break;
-						}
-						case "black": {
-							orientation = BoardOrientation.Black;
-							break;
-						}
-
-						default:
-							break; // This should never happen
-					}
-				}
-
-				if(parsedShaahMaat.headers[i].name === "format") {
-					format = parsedShaahMaat.headers[i].val;
-				}
-			}
 
 			let chess = new Chess();
 
-			switch(format) {
+			switch (parsedShaahMaat.format) {
 				case "fen": {
 					chess.load(parsedShaahMaat.gameNotation);
 					break;
@@ -75,9 +49,9 @@ export default class ShaahMaatPlugin extends Plugin {
 				default:
 					break; // This should never happen
 			}
-			el.appendChild(this.shaahmaat.boardWithPosition(chess.board(), orientation));
+			el.appendChild(this.shaahmaat.boardWithPosition(chess.board(), parsedShaahMaat.orientation));
 		}
-		catch(err) {
+		catch (err) {
 			el.appendChild(this.shaahmaat.renderError(err));
 		}
 	}

@@ -1,3 +1,5 @@
+import { BoardOrientation } from "ShaahMaat";
+
 export class ShaahMaatHeader {
     name: string;
     val: string;
@@ -9,12 +11,13 @@ export class ShaahMaatHeader {
 }
 
 export class ParsedShaahMaat {
-
-    headers: ShaahMaatHeader[];
+    orientation: BoardOrientation;
+    format: string;
     gameNotation: string;
 
-    constructor(headers: ShaahMaatHeader[], gameNotation: string) {
-        this.headers = headers;
+    constructor(orientation: BoardOrientation, format: string, gameNotation: string) {
+        this.orientation = orientation;
+        this.format = format;
         this.gameNotation = gameNotation;
     }
 }
@@ -23,11 +26,10 @@ export class ShaahMaatParser {
 
     public static parseShaahMaat(source: string): ParsedShaahMaat {
         let lines = source.split('\n');
-
-        let headers: ShaahMaatHeader[] = new Array<ShaahMaatHeader>();
         let gameNotation = "";
-        let formatFound = false;
-        let orientationFound = false;
+
+        let orientation = undefined;
+        let format = undefined;
 
         let firstHeaderFound = false;
 
@@ -35,33 +37,38 @@ export class ShaahMaatParser {
 
             if (lines[i] !== "") {
                 firstHeaderFound = true;
-                headers.push(this.parseHeader(lines[i]));
-
-                let lastHeaderIndex = headers.length - 1;
+                let header = this.parseHeader(lines[i]);
 
                 // Check if the headers are correct
-                if (headers[lastHeaderIndex].name === "orientation") {
-                    if (orientationFound) {
+                if (header.name === "orientation") {
+                    if (orientation !== undefined) {
                         throw new Error("Only one orientation header is allowed!");
                     }
 
-                    if (headers[lastHeaderIndex].val !== "white" && headers[lastHeaderIndex].val !== "black") {
-                        throw new Error("Invalid orientation. Expected white or black!");
+                    switch (header.val) {
+                        case "white": {
+                            orientation = BoardOrientation.White;
+                            break;
+                        }
+                        case "black": {
+                            orientation = BoardOrientation.Black;
+                            break;
+                        }
+                        default:
+                            throw new Error("Invalid orientation. Expected white or black!");
                     }
-
-                    orientationFound = true;
                 }
 
-                if (headers[headers.length - 1].name === "format") {
-                    if (formatFound) {
+                if (header.name === "format") {
+                    if (format !== undefined) {
                         throw new Error("Only one format header is allowed!");
                     }
 
-                    if (headers[lastHeaderIndex].val !== "fen" && headers[lastHeaderIndex].val !== "pgn") {
+                    if (header.val !== "fen" && header.val !== "pgn") {
                         throw new Error("Invalid format. Expected fen or pgn!");
                     }
 
-                    formatFound = true;
+                    format = header.val;
                 }
             }
 
@@ -75,15 +82,15 @@ export class ShaahMaatParser {
             }
         }
 
-        if (!orientationFound) {
+        if (orientation === undefined) {
             throw new Error("Missing orientation header!");
         }
 
-        if (!formatFound) {
+        if (format === undefined) {
             throw new Error("Missing format header!");
         }
 
-        return new ParsedShaahMaat(headers, gameNotation);
+        return new ParsedShaahMaat(orientation, format, gameNotation);
     }
 
     public static parseHeader(header: string): ShaahMaatHeader {

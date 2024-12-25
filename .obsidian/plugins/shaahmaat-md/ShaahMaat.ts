@@ -95,7 +95,6 @@ export default class ShaahMaat {
 
         let domParser = new DOMParser();
 
-        // let chessboardEl = chessboard.getElementsByClassName('shaahmaat-chessboard')[0];
         let rows = chessboard.getElementsByClassName('shaahmaat-chessboard-row');
 
         for (let i = 0; i < 8; ++i) {
