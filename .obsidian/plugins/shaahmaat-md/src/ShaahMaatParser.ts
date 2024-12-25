@@ -1,4 +1,4 @@
-import { BoardOrientation } from "ShaahMaat";
+import { BoardOrientation } from "./ShaahMaat";
 
 export class ShaahMaatHeader {
     name: string;

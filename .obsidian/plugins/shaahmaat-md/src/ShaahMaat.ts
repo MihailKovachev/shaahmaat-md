@@ -30,7 +30,7 @@ export default class ShaahMaat {
 
     public async init(chessSet: string) {
 
-        let chessSetFolder = (this.app.vault.configDir.normalize() + '/plugins/shaahmaat-md/res/chess_sets/' + chessSet + '/').normalize();
+        let chessSetFolder = (this.app.vault.configDir.normalize() + '/plugins/shaahmaat-md/assets/chess_sets/' + chessSet + '/').normalize();
 
         this.pieces.set("king_light", (await this.app.vault.adapter.read(chessSetFolder + 'king_light.svg')));
         this.pieces.set("king_dark", (await this.app.vault.adapter.read(chessSetFolder + 'king_dark.svg')));

@@ -1,4 +1,4 @@
-import ShaahMaatPlugin from "main";
+import ShaahMaatPlugin from "./main";
 import { App, PluginSettingTab, Setting } from "obsidian";
 
 export interface ShaahMaatSettings {

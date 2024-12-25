@@ -1,9 +1,9 @@
 import { Chess } from 'chess.js';
 import { App, Editor, HexString, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-import ShaahMaat, { BoardOrientation } from 'ShaahMaat';
-import { ShaahMaatParser } from 'ShaahMaatParser';
-import { DEFAULT_SETTINGS, ShaahMaatSettings, ShaahMaatSettingTab } from 'ShaahMaatSettings';
+import ShaahMaat, { BoardOrientation } from './ShaahMaat';
+import { ShaahMaatParser } from './ShaahMaatParser';
+import { DEFAULT_SETTINGS, ShaahMaatSettings, ShaahMaatSettingTab } from './ShaahMaatSettings';
 
 const HEADERS = ["orientation", "format"];
 
@@ -17,7 +17,7 @@ export default class ShaahMaatPlugin extends Plugin {
 
 		await this.loadSettings();
 
-		let chessSetsFolder = (this.app.vault.configDir.normalize() + '/plugins/shaahmaat-md/res/chess_sets').normalize();
+		let chessSetsFolder = (this.app.vault.configDir.normalize() + '/plugins/shaahmaat-md/assets/chess_sets').normalize();
 		let chessSets = (await this.app.vault.adapter.list(chessSetsFolder)).
 			folders.map((path: string, index: number, arr: string[]) => { return path.substring(path.lastIndexOf('/') + 1) });
 
