@@ -1,5 +1,6 @@
-import { Chess } from "chess.js";
+import { Chess, Square } from "chess.js";
 import { BoardOrientation, Chessboard, ShaahMaatBoardInfo } from "./ShaahMaatBoardInfo";
+import { COLUMNS, ROWS } from "./ShaahMaat";
 
 export class ShaahMaatHeader {
     name: string;
@@ -31,6 +32,7 @@ export class ShaahMaatParser {
 
         let board = undefined;
         let orientation = undefined;
+        let highlightedSquares = new Array<Square>();
         let format = undefined;
 
         let firstHeaderFound = false;
@@ -72,6 +74,23 @@ export class ShaahMaatParser {
 
                     format = header.val;
                 }
+
+                if (header.name === "highlight") {
+                    if (highlightedSquares.length > 0) {
+                        throw new Error("Only one highlight header is allowed!");
+                    }
+
+                    let squares = header.val.trim().split(' ');
+
+                    for (let square of squares) {
+                        if (square.length !== 2 || !COLUMNS.contains(square.charAt(0)) || !ROWS.contains(square.charAt(1)))
+                        {
+                            throw new Error("Invalid hightlight header!");
+                        }
+
+                        highlightedSquares.push(square  as Square);
+                    }
+                }
             }
 
             // We have found the line which separates headers from notation
@@ -101,7 +120,7 @@ export class ShaahMaatParser {
 
         board = chess.board()!;
 
-        return new ShaahMaatBoardInfo(board as Chessboard, orientation, new Array());
+        return new ShaahMaatBoardInfo(board as Chessboard, orientation, highlightedSquares);
     }
 
     public static parseHeader(header: string): ShaahMaatHeader {

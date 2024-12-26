@@ -1,6 +1,7 @@
 ```shaahmaat
 format: fen
 orientation: white
+highlight: c8 a2 b1 b8
 
 rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 ```

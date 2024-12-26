@@ -2,10 +2,10 @@ import { Chess, Color, PAWN, PieceSymbol, Square } from 'chess.js';
 
 import { App } from 'obsidian';
 
-import { BoardOrientation, Chessboard } from './ShaahMaatBoardInfo';
+import { BoardOrientation, Chessboard, ShaahMaatBoardInfo } from './ShaahMaatBoardInfo';
 
-const COLUMNS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-const ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
+export const COLUMNS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+export const ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
 export default class ShaahMaat {
 
@@ -29,10 +29,13 @@ export default class ShaahMaat {
         this.pieces = new Map();
     }
 
-    public emptyBoard(orientation: BoardOrientation = BoardOrientation.White, size: number = 256): HTMLDivElement {
+    public createChessBoardEl(boardInfo: ShaahMaatBoardInfo, size: number = 256): HTMLDivElement {
 
         let squareSide = size / 8;
 
+        let board = boardInfo.board;
+
+        // Generate the board
         let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": "width: " + size + "px; height: " + size + "px;" } });
 
         for (let i = 0; i < 8; ++i) {
@@ -40,47 +43,41 @@ export default class ShaahMaat {
             let row = chessboardDiv.createDiv({ cls: "shaahmaat-chessboard-row" });
 
             for (let j = 0; j < 8; ++j) {
-
+                // Generate the board
                 let backgroundColor = (i + j) % 2 == 0 ? this.lightSquareColor : this.darkSquareColor;
-                let columnCoord = orientation === BoardOrientation.Black ? COLUMNS[7 - j] : COLUMNS[j];
-                let rowCoord = orientation === BoardOrientation.Black ? ROWS[i] : ROWS[7 - i];
+
+                let columnCoord = boardInfo.orientation === BoardOrientation.Black ? COLUMNS[7 - j] : COLUMNS[j];
+                let rowCoord = boardInfo.orientation === BoardOrientation.Black ? ROWS[i] : ROWS[7 - i];
 
                 let square = row.createDiv(
-                    {
-                        cls: "shaahmaat-chessboard-square",
-                        attr: {
-                            "data-square-coordinates": columnCoord + rowCoord,
-                        }
-                    });
-                    
-                square.style.setProperty("--square-background-color", backgroundColor);
-            }
-        }
+                {
+                    cls: "shaahmaat-chessboard-square",
+                    attr: {
+                        "data-square-coordinates": columnCoord + rowCoord,
+                    }
+                });
 
-        return chessboardDiv;
-    }
-
-    public createChessBoardEl(position: Chessboard, orientation = BoardOrientation.White, size: number = 256): HTMLDivElement {
-        let chessboard = this.emptyBoard(orientation, size);
-
-        if (position === null) {
-            return chessboard;
-        }
-
-        let rows = chessboard.getElementsByClassName('shaahmaat-chessboard-row');
-
-        for (let i = 0; i < 8; ++i) {
-            for (let j = 0; j < 8; ++j) {
-                if (position[i][j] === null) {
-                    continue;
+                // Check if the square is highlighted
+                let isSquareHighlighted = false;
+                for (let sq of boardInfo.highlightedSquares) {
+                    if(sq.charAt(0) === columnCoord && sq.charAt(1) == rowCoord) {
+                        isSquareHighlighted = true;
+                        break;
+                    }
                 }
-                let column = position[i][j]?.square.charAt(0);
-                let row = position[i][j]?.square.charAt(1);
 
-                let color = position[i][j]?.color === 'w' ? "white" : "black";
+                square.style.setProperty("--square-background-color", isSquareHighlighted ? this.highlightedSquareColor : backgroundColor);
+
+                // Place the pieces
+
+                if (board === null || board[i][j] === null) {
+                    continue; // Skip the piece placement if the board contains no pieces or the current square is empty.
+                }
+
+                let color = board[i][j].color === 'w' ? "white" : "black";
                 let piece = "";
 
-                switch (position[i][j]?.type) {
+                switch (board[i][j].type) {
                     case 'b': {
                         piece = "bishop";
                         break;
@@ -107,40 +104,17 @@ export default class ShaahMaat {
                     }
                 }
 
-                switch (orientation) {
-                    case BoardOrientation.White: {
-
-                        let squares = rows[8 - parseInt(row!)].getElementsByClassName("shaahmaat-chessboard-square");
-                        for (let k = 0; k < squares.length; ++k) {
-                            if (squares[k].getAttribute('data-square-coordinates') === position[i][j]?.square) {
-                                squares[k].addClass("shaahmaat-chess-piece");
-                                squares[k].addClass(this.chessSet + "-chess-set");
-                                squares[k].addClass(piece);
-                                squares[k].addClass(color);
-                            }
-                        }
-
-                        break;
-                    }
-
-                    case BoardOrientation.Black: {
-
-                        let squares = rows[parseInt(row!) - 1].getElementsByClassName('shaahmaat-chessboard-square');
-                        for (let k = 0; k < squares.length; ++k) {
-                            if (squares[k].getAttribute('data-square-coordinates') === position[i][j]?.square) {
-                                squares[k].addClass("shaahmaat-chess-piece");
-                                squares[k].addClass(this.chessSet + "-chess-set");
-                                squares[k].addClass(piece);
-                                squares[k].addClass(color);
-                            }
-                        }
-
-                        break;
-                    }
+                if (board[i][j] !== null) {
+                    square.addClass("shaahmaat-chess-piece");
+                    square.addClass(this.chessSet + "-chess-set");
+                    square.addClass(piece);
+                    square.addClass(color);
                 }
             }
+
         }
-        return chessboard;
+
+        return chessboardDiv;
     }
 
     public renderError(err: Error): HTMLElement {
