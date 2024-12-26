@@ -16,51 +16,29 @@ export default class ShaahMaat {
 
     lightSquareColor: string;
     darkSquareColor: string;
+    chessSet: string;
 
     pieces: Map<string, string>;
 
-    constructor(app: App, lightSquareColor: string, darkSquareColor: string) {
+    constructor(app: App, lightSquareColor: string, darkSquareColor: string, chessSet: string) {
         this.app = app;
 
         this.lightSquareColor = lightSquareColor;
         this.darkSquareColor = darkSquareColor;
+        this.chessSet = chessSet;
 
         this.pieces = new Map();
-    }
-
-    public async init(chessSet: string) {
-
-        let chessSetFolder = (this.app.vault.configDir.normalize() + '/plugins/shaahmaat-md/assets/chess_sets/' + chessSet + '/').normalize();
-
-        this.pieces.set("king_light", (await this.app.vault.adapter.read(chessSetFolder + 'king_light.svg')));
-        this.pieces.set("king_dark", (await this.app.vault.adapter.read(chessSetFolder + 'king_dark.svg')));
-
-        this.pieces.set("queen_light", (await this.app.vault.adapter.read(chessSetFolder + 'queen_light.svg')));
-        this.pieces.set("queen_dark", (await this.app.vault.adapter.read(chessSetFolder + 'queen_dark.svg')));
-
-        this.pieces.set("bishop_light", (await this.app.vault.adapter.read(chessSetFolder + 'bishop_light.svg')));
-        this.pieces.set("bishop_dark", (await this.app.vault.adapter.read(chessSetFolder + 'bishop_dark.svg')));
-
-        this.pieces.set("knight_light", (await this.app.vault.adapter.read(chessSetFolder + 'knight_light.svg')));
-        this.pieces.set("knight_dark", (await this.app.vault.adapter.read(chessSetFolder + 'knight_dark.svg')));
-
-        this.pieces.set("rook_light", (await this.app.vault.adapter.read(chessSetFolder + 'rook_light.svg')));
-        this.pieces.set("rook_dark", (await this.app.vault.adapter.read(chessSetFolder + 'rook_dark.svg')));
-
-        this.pieces.set("pawn_light", (await this.app.vault.adapter.read(chessSetFolder + 'pawn_light.svg')))
-        this.pieces.set("pawn_dark", (await this.app.vault.adapter.read(chessSetFolder + 'pawn_dark.svg')));
-
     }
 
     public emptyBoard(orientation: BoardOrientation = BoardOrientation.White, size: number = 256): HTMLDivElement {
 
         let squareSide = size / 8;
 
-        let chessboardDiv = createDiv({ cls: 'shaahmaat-chessboard', attr: { "style": "width: " + size + "px; height: " + size + "px;" } });
+        let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": "width: " + size + "px; height: " + size + "px;" } });
 
         for (let i = 0; i < 8; ++i) {
 
-            let row = chessboardDiv.createDiv({ cls: 'shaahmaat-chessboard-row' });
+            let row = chessboardDiv.createDiv({ cls: "shaahmaat-chessboard-row" });
 
             for (let j = 0; j < 8; ++j) {
 
@@ -70,7 +48,7 @@ export default class ShaahMaat {
 
                 let square = row.createDiv(
                     {
-                        cls: 'shaahmaat-chessboard-square',
+                        cls: "shaahmaat-chessboard-square",
                         attr: {
                             "data-square-coordinates": columnCoord + rowCoord,
                         }
@@ -106,7 +84,7 @@ export default class ShaahMaat {
                 let column = position[i][j]?.square.charAt(0);
                 let row = position[i][j]?.square.charAt(1);
 
-                let color = position[i][j]?.color === 'w' ? "light" : "dark";
+                let color = position[i][j]?.color === 'w' ? "white" : "black";
                 let piece = "";
 
                 switch (position[i][j]?.type) {
@@ -139,20 +117,13 @@ export default class ShaahMaat {
                 switch (orientation) {
                     case BoardOrientation.White: {
 
-                        let squares = rows[8 - parseInt(row!)].getElementsByClassName('shaahmaat-chessboard-square');
+                        let squares = rows[8 - parseInt(row!)].getElementsByClassName("shaahmaat-chessboard-square");
                         for (let k = 0; k < squares.length; ++k) {
                             if (squares[k].getAttribute('data-square-coordinates') === position[i][j]?.square) {
-                                let pieceSvg = this.pieces.get(piece + "_" + color);
-
-                                let svgEl = domParser.parseFromString(pieceSvg!, "image/svg+xml").documentElement;
-
-                                // Set the viewBox so that the entire SVG image is rendered. 
-                                svgEl.setAttribute("viewBox", "0 0 " + svgEl.getAttribute("width")! + " " + svgEl.getAttribute("height")!);
-
-                                svgEl.setAttribute("width", "100%");
-                                svgEl.setAttribute("height", "100%");
-
-                                squares[k].appendChild(svgEl);
+                                squares[k].addClass("shaahmaat-chess-piece");
+                                squares[k].addClass(this.chessSet + "-chess-set");
+                                squares[k].addClass(piece);
+                                squares[k].addClass(color);
                             }
                         }
 
@@ -164,17 +135,10 @@ export default class ShaahMaat {
                         let squares = rows[parseInt(row!) - 1].getElementsByClassName('shaahmaat-chessboard-square');
                         for (let k = 0; k < squares.length; ++k) {
                             if (squares[k].getAttribute('data-square-coordinates') === position[i][j]?.square) {
-                                let pieceSvg = this.pieces.get(piece + "_" + color);
-
-                                let svgEl = domParser.parseFromString(pieceSvg!, "image/svg+xml").documentElement;
-
-                                // Set the viewBox so that the entire SVG image is rendered. 
-                                svgEl.setAttribute("viewBox", "0 0 " + svgEl.getAttribute("width")! + " " + svgEl.getAttribute("height")!);
-
-                                svgEl.setAttribute("width", "100%");
-                                svgEl.setAttribute("height", "100%");
-
-                                squares[k].appendChild(svgEl);
+                                squares[k].addClass("shaahmaat-chess-piece");
+                                squares[k].addClass(this.chessSet + "-chess-set");
+                                squares[k].addClass(piece);
+                                squares[k].addClass(color);
                             }
                         }
 

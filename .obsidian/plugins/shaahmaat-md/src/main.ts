@@ -7,6 +7,8 @@ import { DEFAULT_SETTINGS, ShaahMaatSettings, ShaahMaatSettingTab } from './Shaa
 
 const HEADERS = ["orientation", "format"];
 
+const CHESS_SETS = ["cburnett"];
+
 export default class ShaahMaatPlugin extends Plugin {
 	settings: ShaahMaatSettings;
 	shaahmaat: ShaahMaat;
@@ -15,14 +17,9 @@ export default class ShaahMaatPlugin extends Plugin {
 
 		await this.loadSettings();
 
-		let chessSetsFolder = (this.app.vault.configDir.normalize() + '/plugins/shaahmaat-md/assets/chess_sets').normalize();
-		let chessSets = (await this.app.vault.adapter.list(chessSetsFolder)).
-			folders.map((path: string, index: number, arr: string[]) => { return path.substring(path.lastIndexOf('/') + 1) });
+		this.addSettingTab(new ShaahMaatSettingTab(this.app, this, CHESS_SETS));
 
-		this.addSettingTab(new ShaahMaatSettingTab(this.app, this, chessSets));
-
-		this.shaahmaat = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor);
-		this.shaahmaat.init(this.settings.chessSet);
+		this.shaahmaat = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor, this.settings.chessSet);
 
 		this.registerMarkdownCodeBlockProcessor('shaahmaat', this.postProcessShaahMaat.bind(this));
 
