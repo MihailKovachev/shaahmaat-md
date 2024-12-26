@@ -1,7 +1,7 @@
 import { Chess } from 'chess.js';
 import { App, Editor, HexString, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-import ShaahMaat, { BoardOrientation } from './ShaahMaat';
+import ShaahMaat from './ShaahMaat';
 import { ShaahMaatParser } from './ShaahMaatParser';
 import { DEFAULT_SETTINGS, ShaahMaatSettings, ShaahMaatSettingTab } from './ShaahMaatSettings';
 
@@ -19,7 +19,7 @@ export default class ShaahMaatPlugin extends Plugin {
 
 		this.addSettingTab(new ShaahMaatSettingTab(this.app, this, CHESS_SETS));
 
-		this.shaahmaat = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor, this.settings.chessSet);
+		this.shaahmaat = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor, this.settings.highlightedSquareColor, this.settings.chessSet);
 
 		this.registerMarkdownCodeBlockProcessor('shaahmaat', this.postProcessShaahMaat.bind(this));
 
@@ -30,21 +30,7 @@ export default class ShaahMaatPlugin extends Plugin {
 		try {
 			let parsedShaahMaat = ShaahMaatParser.parseShaahMaat(source);
 
-			let chess = new Chess();
-
-			switch (parsedShaahMaat.format) {
-				case "fen": {
-					chess.load(parsedShaahMaat.gameNotation);
-					break;
-				}
-				case "pgn": {
-					chess.loadPgn(parsedShaahMaat.gameNotation);
-					break;
-				}
-				default:
-					break; // This should never happen
-			}
-			el.appendChild(this.shaahmaat.boardWithPosition(chess.board(), parsedShaahMaat.orientation));
+			el.appendChild(this.shaahmaat.createChessBoardEl(parsedShaahMaat.board, parsedShaahMaat.orientation));
 		}
 		catch (err) {
 			el.appendChild(this.shaahmaat.renderError(err));

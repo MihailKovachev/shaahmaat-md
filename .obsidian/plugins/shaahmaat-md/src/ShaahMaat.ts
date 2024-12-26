@@ -2,10 +2,7 @@ import { Chess, Color, PAWN, PieceSymbol, Square } from 'chess.js';
 
 import { App } from 'obsidian';
 
-export enum BoardOrientation {
-    Black,
-    White
-}
+import { BoardOrientation, Chessboard } from './ShaahMaatBoardInfo';
 
 const COLUMNS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
@@ -16,15 +13,17 @@ export default class ShaahMaat {
 
     lightSquareColor: string;
     darkSquareColor: string;
+    highlightedSquareColor: string;
     chessSet: string;
 
     pieces: Map<string, string>;
 
-    constructor(app: App, lightSquareColor: string, darkSquareColor: string, chessSet: string) {
+    constructor(app: App, lightSquareColor: string, darkSquareColor: string, highlightedSquareColor: string, chessSet: string) {
         this.app = app;
 
         this.lightSquareColor = lightSquareColor;
         this.darkSquareColor = darkSquareColor;
+        this.highlightedSquareColor = highlightedSquareColor;
         this.chessSet = chessSet;
 
         this.pieces = new Map();
@@ -61,18 +60,12 @@ export default class ShaahMaat {
         return chessboardDiv;
     }
 
-    public boardWithPosition(position: ({
-        square: Square;
-        type: PieceSymbol;
-        color: Color;
-    } | null)[][], orientation = BoardOrientation.White, size: number = 256): HTMLDivElement {
+    public createChessBoardEl(position: Chessboard, orientation = BoardOrientation.White, size: number = 256): HTMLDivElement {
         let chessboard = this.emptyBoard(orientation, size);
 
         if (position === null) {
             return chessboard;
         }
-
-        let domParser = new DOMParser();
 
         let rows = chessboard.getElementsByClassName('shaahmaat-chessboard-row');
 

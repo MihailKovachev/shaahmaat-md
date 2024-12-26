@@ -1,4 +1,5 @@
-import { BoardOrientation } from "./ShaahMaat";
+import { Chess } from "chess.js";
+import { BoardOrientation, Chessboard, ShaahMaatBoardInfo } from "./ShaahMaatBoardInfo";
 
 export class ShaahMaatHeader {
     name: string;
@@ -24,10 +25,11 @@ export class ParsedShaahMaat {
 
 export class ShaahMaatParser {
 
-    public static parseShaahMaat(source: string): ParsedShaahMaat {
+    public static parseShaahMaat(source: string): ShaahMaatBoardInfo {
         let lines = source.split('\n');
         let gameNotation = "";
 
+        let board = undefined;
         let orientation = undefined;
         let format = undefined;
 
@@ -86,11 +88,20 @@ export class ShaahMaatParser {
             throw new Error("Missing orientation header!");
         }
 
-        if (format === undefined) {
+        let chess = new Chess();
+        if(format === "fen") {
+            chess.load(gameNotation);
+        }
+        else if(format === "pgn"){
+            chess.loadPgn(gameNotation);
+        }
+        else if (format === undefined) {
             throw new Error("Missing format header!");
         }
 
-        return new ParsedShaahMaat(orientation, format, gameNotation);
+        board = chess.board()!;
+
+        return new ShaahMaatBoardInfo(board as Chessboard, orientation, new Array());
     }
 
     public static parseHeader(header: string): ShaahMaatHeader {

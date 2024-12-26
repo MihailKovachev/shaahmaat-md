@@ -4,13 +4,15 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 export interface ShaahMaatSettings {
 	lightSquareColor: string,
 	darkSquareColor: string,
+	highlightedSquareColor: string,
 	chessSet: string
 }
 
 export const DEFAULT_SETTINGS: ShaahMaatSettings = {
-	lightSquareColor: '#ffce9e',
-	darkSquareColor: '#d18b47',
-	chessSet: 'cburnett'
+	lightSquareColor: "#ffce9e",
+	darkSquareColor: "#d18b47",
+	highlightedSquareColor: "#d9ff00",
+	chessSet: "cburnett"
 }
 
 export class ShaahMaatSettingTab extends PluginSettingTab {
@@ -45,6 +47,16 @@ export class ShaahMaatSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.darkSquareColor)
 				.onChange(async (value) => {
 					this.plugin.settings.darkSquareColor = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Highlighted square colour')
+			.setDesc('The colour used for highlighted squares on the board.')
+			.addColorPicker(colorPicker => colorPicker
+				.setValue(this.plugin.settings.highlightedSquareColor)
+				.onChange(async (value) => {
+					this.plugin.settings.highlightedSquareColor = value;
 					await this.plugin.saveSettings();
 				}));
 
