@@ -30,12 +30,25 @@ If your plugin does not need CSS, delete this file.
 }
 
 .shaahmaat-chessboard {
+    position: relative;
+
     box-sizing: content-box;
 
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: auto;
     margin-right: auto;
+
+    overflow: hidden;
+}
+
+.shaahmaat-annotations {
+    display: inline;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 /*

@@ -14,25 +14,24 @@ export default class ShaahMaat {
     lightSquareColor: string;
     darkSquareColor: string;
     highlightedSquareColor: string;
+    annotationArrowColor: string;
     chessSet: string;
 
     pieces: Map<string, string>;
 
-    constructor(app: App, lightSquareColor: string, darkSquareColor: string, highlightedSquareColor: string, chessSet: string) {
+    constructor(app: App, lightSquareColor: string, darkSquareColor: string, highlightedSquareColor: string, annotationArrowColor: string, chessSet: string) {
         this.app = app;
 
         this.lightSquareColor = lightSquareColor;
         this.darkSquareColor = darkSquareColor;
         this.highlightedSquareColor = highlightedSquareColor;
+        this.annotationArrowColor = annotationArrowColor;
         this.chessSet = chessSet;
 
         this.pieces = new Map();
     }
 
     public createChessBoardEl(boardInfo: ShaahMaatBoardInfo): HTMLDivElement {
-
-        let squareSide = boardInfo.size / 8;
-
         let board = boardInfo.board;
 
         // Generate the board
@@ -121,6 +120,96 @@ export default class ShaahMaat {
             square!.addClass(piece);
             square!.addClass(color);
         }
+
+        // Render annotations
+        let annotationsSvg = createSvg('svg');
+        annotationsSvg.setAttribute("width", `${boardInfo.size}px`);
+        annotationsSvg.setAttribute("height", `${boardInfo.size}px`)
+        annotationsSvg.addClass("shaahmaat-annotations");
+
+        /*
+        let defs = createSvg("defs");
+        let arrowHeadMarker = createSvg("marker");
+        let arrowHeadPolygon = createSvg("polygon");
+        arrowHeadPolygon.setAttribute("")*/
+
+
+        annotationsSvg.appendChild(createSvg("defs"));
+
+        for (let annotation of boardInfo.annotations) {
+            let fromDiv = chessboardDiv.querySelector("[data-square-coordinates='" + annotation.from + "'");
+            let toDiv = chessboardDiv.querySelector("[data-square-coordinates='" + annotation.to + "'");
+
+            let startX = undefined;
+            let startY = undefined;
+            let endX = undefined;
+            let endY = undefined;
+
+            let startColumn = undefined;
+            let startRow = undefined;
+            let endColumn = undefined;
+            let endRow = undefined;
+
+            switch (boardInfo.orientation) {
+                case BoardOrientation.Black: {
+
+                    startColumn = 7 - COLUMNS.findIndex((col) => col === fromDiv!.getAttribute("data-square-coordinates")!.charAt(0));
+                    startRow = parseInt(fromDiv!.getAttribute("data-square-coordinates")!.charAt(1)) - 1;
+                    endColumn = 7 - COLUMNS.findIndex((col) => col === toDiv!.getAttribute("data-square-coordinates")!.charAt(0));
+                    endRow = parseInt(toDiv!.getAttribute("data-square-coordinates")!.charAt(1)) - 1;
+
+                    break;
+                }
+                case BoardOrientation.White: {
+                    startColumn = COLUMNS.findIndex((col) => col === fromDiv!.getAttribute("data-square-coordinates")!.charAt(0));
+                    startRow = 8 - parseInt(fromDiv!.getAttribute("data-square-coordinates")!.charAt(1));
+                    endColumn = COLUMNS.findIndex((col) => col === toDiv!.getAttribute("data-square-coordinates")!.charAt(0));
+                    endRow = 8 - parseInt(toDiv!.getAttribute("data-square-coordinates")!.charAt(1));
+
+                    break;
+                }
+            }
+
+            let squareSide = boardInfo.size / 8;
+            startX = startColumn * squareSide + squareSide / 2;
+            startY = startRow * squareSide + squareSide / 2;
+            endX = endColumn * squareSide + squareSide / 2;
+            endY = endRow * squareSide + squareSide / 2;
+
+            let arrowBodyGirth = squareSide / 6;
+            let arrowHeadHeight = arrowBodyGirth * 3;
+            let arrowHeadLength = arrowHeadHeight * 1.5;
+
+            const h = (Math.sqrt(3) / 2) * arrowHeadLength;
+
+            const arrowLength = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+
+            // Create a horizontal arrow pointing to the right and then rotate it appropriately
+            const ax = startX;
+            const ay = startY - arrowBodyGirth / 2;
+            const bx = startX + arrowLength - arrowHeadLength / 2;
+            const by = ay;
+            const cx = bx;
+            const cy = startY - arrowHeadHeight / 2;
+            const dx = startX + arrowLength;
+            const dy = startY;
+            const ex = bx;
+            const ey = startY + arrowHeadHeight / 2;
+            const fx = bx;
+            const fy = startY + arrowBodyGirth / 2;
+            const gx = startX;
+            const gy = fy;
+
+            let arrow = createSvg("polygon");
+            arrow.setAttribute("points", `${ax},${ay} ${bx},${by} ${cx},${cy} ${dx},${dy} ${ex},${ey} ${fx},${fy} ${gx},${gy}`);
+            arrow.setAttribute("transform", `rotate(${Math.atan2(endY - startY, endX - startX) * (180 / Math.PI)}, ${startX}, ${startY})`)
+            arrow.setAttribute("fill", this.annotationArrowColor);
+
+            annotationsSvg.appendChild(arrow);
+
+        }
+
+        chessboardDiv.appendChild(annotationsSvg);
 
         return chessboardDiv;
     }

@@ -5,6 +5,7 @@ export interface ShaahMaatSettings {
 	lightSquareColor: string,
 	darkSquareColor: string,
 	highlightedSquareColor: string,
+	annotationArrowColor: string,
 	chessSet: string
 }
 
@@ -12,6 +13,7 @@ export const DEFAULT_SETTINGS: ShaahMaatSettings = {
 	lightSquareColor: "#ffce9e",
 	darkSquareColor: "#d18b47",
 	highlightedSquareColor: "#a8de14",
+	annotationArrowColor: "#e34612",
 	chessSet: "cburnett"
 }
 
@@ -57,6 +59,16 @@ export class ShaahMaatSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.highlightedSquareColor)
 				.onChange(async (value) => {
 					this.plugin.settings.highlightedSquareColor = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Annotation arrow colour')
+			.setDesc('The colour used for annotation arrows.')
+			.addColorPicker(colorPicker => colorPicker
+				.setValue(this.plugin.settings.annotationArrowColor)
+				.onChange(async (value) => {
+					this.plugin.settings.annotationArrowColor = value;
 					await this.plugin.saveSettings();
 				}));
 

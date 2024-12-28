@@ -2,6 +2,8 @@
 format: fen
 orientation: white
 highlights: c8 a2 b1 b8
+annotations: b2->b4 b1->c3
+size: 384
 
 rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 ```

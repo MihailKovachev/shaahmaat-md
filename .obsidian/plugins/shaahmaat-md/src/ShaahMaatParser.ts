@@ -1,5 +1,5 @@
 import { Chess, Square } from "chess.js";
-import { BoardOrientation, Chessboard, ShaahMaatBoardInfo } from "./ShaahMaatBoardInfo";
+import { Annotation, BoardOrientation, Chessboard, ShaahMaatBoardInfo } from "./ShaahMaatBoardInfo";
 import { COLUMNS, ROWS } from "./ShaahMaat";
 
 export class ShaahMaatHeader {
@@ -34,6 +34,7 @@ export class ShaahMaatParser {
         let orientation = undefined;
         let size = undefined;
         let highlightedSquares = new Array<Square>();
+        let annotations = new Array<Annotation>();
         let format = undefined;
 
         let firstHeaderFound = false;
@@ -84,21 +85,46 @@ export class ShaahMaatParser {
                     let squares = header.val.trim().split(' ');
 
                     for (let square of squares) {
-                        if (square.length !== 2 || !COLUMNS.contains(square.charAt(0)) || !ROWS.contains(square.charAt(1)))
-                        {
+                        if (square.length !== 2 || !COLUMNS.contains(square.charAt(0)) || !ROWS.contains(square.charAt(1))) {
                             throw new Error("Invalid hightlight header!");
                         }
 
-                        highlightedSquares.push(square  as Square);
+                        highlightedSquares.push(square as Square);
                     }
                 }
 
                 if (header.name === "size") {
-                    if(size !== undefined) {
+                    if (size !== undefined) {
                         throw new Error("Only one size header is allowed!");
                     }
 
                     size = parseInt(header.val);
+                }
+
+                if (header.name === "annotations") {
+
+                    if (annotations.length > 0) {
+                        throw new Error("Only one annotations header is allowed!");
+                    }
+
+                    let annotationStrings = header.val.split(' ');
+
+                    for (let annotationString of annotationStrings) {
+                        if (annotationString.length !== 6
+                            || !COLUMNS.contains(annotationString.charAt(0))
+                            || !ROWS.contains(annotationString.charAt(1))
+                            || annotationString.charAt(2) !== '-'
+                            || annotationString.charAt(3) !== '>'
+                            || !COLUMNS.contains(annotationString.charAt(4))
+                            || !ROWS.contains(annotationString.charAt(5))) {
+                            throw new Error("Invalid annotation header!");
+                        }
+
+                        let annotationSquares = annotationString.split('->');
+
+                        annotations.push({from: annotationSquares[0] as Square, to: annotationSquares[1] as Square});
+                    }
+
                 }
             }
 
@@ -116,15 +142,15 @@ export class ShaahMaatParser {
             throw new Error("Missing orientation header!");
         }
 
-        if(size === undefined) {
+        if (size === undefined) {
             size = 256;
         }
 
         let chess = new Chess();
-        if(format === "fen") {
+        if (format === "fen") {
             chess.load(gameNotation);
         }
-        else if(format === "pgn"){
+        else if (format === "pgn") {
             chess.loadPgn(gameNotation);
         }
         else if (format === undefined) {
@@ -133,7 +159,7 @@ export class ShaahMaatParser {
 
         board = chess.board()!;
 
-        return new ShaahMaatBoardInfo(board as Chessboard, orientation, size!, highlightedSquares);
+        return new ShaahMaatBoardInfo(board as Chessboard, orientation, size!, highlightedSquares, annotations);
     }
 
     public static parseHeader(header: string): ShaahMaatHeader {
