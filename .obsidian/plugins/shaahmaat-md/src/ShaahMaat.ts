@@ -36,7 +36,7 @@ export default class ShaahMaat {
         let board = boardInfo.board;
 
         // Generate the board
-        let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": "width: " + size + "px; height: " + size + "px;" } });
+        let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": `width: ${size}px; height: ${size}px;` } });
 
         for (let i = 0; i < 8; ++i) {
 
@@ -53,7 +53,7 @@ export default class ShaahMaat {
                 {
                     cls: "shaahmaat-chessboard-square",
                     attr: {
-                        "data-square-coordinates": columnCoord + rowCoord,
+                        "data-square-coordinates": `${columnCoord}${rowCoord}`
                     }
                 });
 
@@ -106,7 +106,7 @@ export default class ShaahMaat {
 
                 if (board[i][j] !== null) {
                     square.addClass("shaahmaat-chess-piece");
-                    square.addClass(this.chessSet + "-chess-set");
+                    square.addClass(`${this.chessSet}-chess-set`);
                     square.addClass(piece);
                     square.addClass(color);
                 }
@@ -118,6 +118,6 @@ export default class ShaahMaat {
     }
 
     public renderError(err: Error): HTMLElement {
-        return createEl('p', { cls: "shaahmaat-error", text: "Error: " + err.stack + " " + err.message });
+        return createEl('p', { cls: "shaahmaat-error", text: `Error: ${err.stack} ${err.message}` });
     }
 }
