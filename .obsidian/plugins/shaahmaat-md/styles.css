@@ -42,7 +42,7 @@ If your plugin does not need CSS, delete this file.
     overflow: hidden;
 }
 
-.shaahmaat-annotations {
+.shaahmaat-arrows {
     display: inline;
     width: 100%;
     height: 100%;

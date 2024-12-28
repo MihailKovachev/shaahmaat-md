@@ -6,7 +6,7 @@ export type Chessboard = {
     color: Color;
 }[][] | null;
 
-export type Annotation = { from: Square, to: Square };
+export type Arrow = { from: Square, to: Square };
 
 export enum BoardOrientation {
     Black,
@@ -20,14 +20,14 @@ export class ShaahMaatBoardInfo {
     orientation: BoardOrientation;
     size: number;
     highlightedSquares: Square[];
-    annotations: Annotation[];
+    arrows: Arrow[];
 
-    constructor(board: Chessboard, orientation: BoardOrientation, size: number, highlightedSquares: Square[], annotations: Annotation[]) {
+    constructor(board: Chessboard, orientation: BoardOrientation, size: number, highlightedSquares: Square[], arrows: Arrow[]) {
         this.board = board;
         this.orientation = orientation;
         this.size = size;
         this.highlightedSquares = highlightedSquares;
-        this.annotations = annotations;
+        this.arrows = arrows;
     }
 
 }

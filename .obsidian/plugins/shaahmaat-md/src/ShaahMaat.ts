@@ -121,11 +121,11 @@ export default class ShaahMaat {
             square!.addClass(color);
         }
 
-        // Render annotations
-        let annotationsSvg = createSvg('svg');
-        annotationsSvg.setAttribute("width", `${boardInfo.size}px`);
-        annotationsSvg.setAttribute("height", `${boardInfo.size}px`)
-        annotationsSvg.addClass("shaahmaat-annotations");
+        // Render arrows
+        let arrowsSvg = createSvg('svg');
+        arrowsSvg.setAttribute("width", `${boardInfo.size}px`);
+        arrowsSvg.setAttribute("height", `${boardInfo.size}px`)
+        arrowsSvg.addClass("shaahmaat-arrows");
 
         /*
         let defs = createSvg("defs");
@@ -134,9 +134,9 @@ export default class ShaahMaat {
         arrowHeadPolygon.setAttribute("")*/
 
 
-        annotationsSvg.appendChild(createSvg("defs"));
+        arrowsSvg.appendChild(createSvg("defs"));
 
-        for (let annotation of boardInfo.annotations) {
+        for (let annotation of boardInfo.arrows) {
             let fromDiv = chessboardDiv.querySelector("[data-square-coordinates='" + annotation.from + "'");
             let toDiv = chessboardDiv.querySelector("[data-square-coordinates='" + annotation.to + "'");
 
@@ -205,11 +205,11 @@ export default class ShaahMaat {
             arrow.setAttribute("transform", `rotate(${Math.atan2(endY - startY, endX - startX) * (180 / Math.PI)}, ${startX}, ${startY})`)
             arrow.setAttribute("fill", this.annotationArrowColor);
 
-            annotationsSvg.appendChild(arrow);
+            arrowsSvg.appendChild(arrow);
 
         }
 
-        chessboardDiv.appendChild(annotationsSvg);
+        chessboardDiv.appendChild(arrowsSvg);
 
         return chessboardDiv;
     }

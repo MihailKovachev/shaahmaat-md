@@ -19,7 +19,7 @@ export default class ShaahMaatPlugin extends Plugin {
 
 		this.addSettingTab(new ShaahMaatSettingTab(this.app, this, CHESS_SETS));
 
-		this.shaahmaat = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor, this.settings.highlightedSquareColor, this.settings.annotationArrowColor, this.settings.chessSet);
+		this.shaahmaat = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor, this.settings.highlightedSquareColor, this.settings.arrowColor, this.settings.chessSet);
 
 		this.registerMarkdownCodeBlockProcessor('shaahmaat', this.postProcessShaahMaat.bind(this));
 

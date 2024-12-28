@@ -1,5 +1,5 @@
 import { Chess, Square } from "chess.js";
-import { Annotation, BoardOrientation, Chessboard, ShaahMaatBoardInfo } from "./ShaahMaatBoardInfo";
+import { Arrow, BoardOrientation, Chessboard, ShaahMaatBoardInfo } from "./ShaahMaatBoardInfo";
 import { COLUMNS, ROWS } from "./ShaahMaat";
 
 export class ShaahMaatHeader {
@@ -34,7 +34,7 @@ export class ShaahMaatParser {
         let orientation = undefined;
         let size = undefined;
         let highlightedSquares = new Array<Square>();
-        let annotations = new Array<Annotation>();
+        let arrows = new Array<Arrow>();
         let format = undefined;
 
         let firstHeaderFound = false;
@@ -101,28 +101,28 @@ export class ShaahMaatParser {
                     size = parseInt(header.val);
                 }
 
-                if (header.name === "annotations") {
+                if (header.name === "arrows") {
 
-                    if (annotations.length > 0) {
-                        throw new Error("Only one annotations header is allowed!");
+                    if (arrows.length > 0) {
+                        throw new Error("Only one arrows header is allowed!");
                     }
 
-                    let annotationStrings = header.val.split(' ');
+                    let arrowstrings = header.val.split(' ');
 
-                    for (let annotationString of annotationStrings) {
-                        if (annotationString.length !== 6
-                            || !COLUMNS.contains(annotationString.charAt(0))
-                            || !ROWS.contains(annotationString.charAt(1))
-                            || annotationString.charAt(2) !== '-'
-                            || annotationString.charAt(3) !== '>'
-                            || !COLUMNS.contains(annotationString.charAt(4))
-                            || !ROWS.contains(annotationString.charAt(5))) {
+                    for (let arrowstring of arrowstrings) {
+                        if (arrowstring.length !== 6
+                            || !COLUMNS.contains(arrowstring.charAt(0))
+                            || !ROWS.contains(arrowstring.charAt(1))
+                            || arrowstring.charAt(2) !== '-'
+                            || arrowstring.charAt(3) !== '>'
+                            || !COLUMNS.contains(arrowstring.charAt(4))
+                            || !ROWS.contains(arrowstring.charAt(5))) {
                             throw new Error("Invalid annotation header!");
                         }
 
-                        let annotationSquares = annotationString.split('->');
+                        let arrowsquares = arrowstring.split('->');
 
-                        annotations.push({from: annotationSquares[0] as Square, to: annotationSquares[1] as Square});
+                        arrows.push({from: arrowsquares[0] as Square, to: arrowsquares[1] as Square});
                     }
 
                 }
@@ -159,7 +159,7 @@ export class ShaahMaatParser {
 
         board = chess.board()!;
 
-        return new ShaahMaatBoardInfo(board as Chessboard, orientation, size!, highlightedSquares, annotations);
+        return new ShaahMaatBoardInfo(board as Chessboard, orientation, size!, highlightedSquares, arrows);
     }
 
     public static parseHeader(header: string): ShaahMaatHeader {

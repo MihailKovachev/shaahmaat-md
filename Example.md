@@ -1,17 +1,14 @@
 ```shaahmaat
 format: fen
-orientation: white
-highlights: c8 a2 b1 b8
-annotations: b2->b4 b1->c3
-size: 384
+orientation: black
 
-rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
+rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq - 0 2
 ```
 
 ```shaahmaat
 orientation: black
 format: fen
-highlights: c8 a2 b1 b8
+arrows: e4->d5 e4->f5 b8->c6
 
 rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 ```
