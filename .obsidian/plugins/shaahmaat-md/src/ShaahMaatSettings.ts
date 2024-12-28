@@ -11,7 +11,7 @@ export interface ShaahMaatSettings {
 export const DEFAULT_SETTINGS: ShaahMaatSettings = {
 	lightSquareColor: "#ffce9e",
 	darkSquareColor: "#d18b47",
-	highlightedSquareColor: "#83b010",
+	highlightedSquareColor: "#a8de14",
 	chessSet: "cburnett"
 }
 

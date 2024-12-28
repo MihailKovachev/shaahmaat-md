@@ -75,7 +75,7 @@ export class ShaahMaatParser {
                     format = header.val;
                 }
 
-                if (header.name === "highlight") {
+                if (header.name === "highlights") {
                     if (highlightedSquares.length > 0) {
                         throw new Error("Only one highlight header is allowed!");
                     }
