@@ -3,7 +3,7 @@
 	"name": "ShaahMaat-md",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Render chess positions in Obsidian.",
+	"description": "Render chess positions.",
 	"author": "Mihail Kovachev",
 	"authorUrl": "https://github.com/MihailKovachev",
 	"isDesktopOnly": false
