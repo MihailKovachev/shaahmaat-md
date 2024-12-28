@@ -38,29 +38,32 @@ export default class ShaahMaat {
         // Generate the board
         let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": `width: ${size}px; height: ${size}px;` } });
 
+        let squaresWithPieces = new Array<{ row: number, column: number }>();
+
         for (let i = 0; i < 8; ++i) {
 
             let row = chessboardDiv.createDiv({ cls: "shaahmaat-chessboard-row" });
 
+            // Generate the board
             for (let j = 0; j < 8; ++j) {
-                // Generate the board
+
                 let backgroundColor = (i + j) % 2 == 0 ? this.lightSquareColor : this.darkSquareColor;
 
-                let columnCoord = boardInfo.orientation === BoardOrientation.Black ? COLUMNS[7 - j] : COLUMNS[j];
-                let rowCoord = boardInfo.orientation === BoardOrientation.Black ? ROWS[i] : ROWS[7 - i];
+                let columnCoord = boardInfo.orientation === BoardOrientation.White ? COLUMNS[j] : COLUMNS[7 - j];
+                let rowCoord = boardInfo.orientation === BoardOrientation.White ? ROWS[7 - i] : ROWS[i];
 
                 let square = row.createDiv(
-                {
-                    cls: "shaahmaat-chessboard-square",
-                    attr: {
-                        "data-square-coordinates": `${columnCoord}${rowCoord}`
-                    }
-                });
+                    {
+                        cls: "shaahmaat-chessboard-square",
+                        attr: {
+                            "data-square-coordinates": `${columnCoord}${rowCoord}`
+                        }
+                    });
 
                 // Check if the square is highlighted
                 let isSquareHighlighted = false;
                 for (let sq of boardInfo.highlightedSquares) {
-                    if(sq.charAt(0) === columnCoord && sq.charAt(1) == rowCoord) {
+                    if (sq.charAt(0) === columnCoord && sq.charAt(1) == rowCoord) {
                         isSquareHighlighted = true;
                         break;
                     }
@@ -68,51 +71,63 @@ export default class ShaahMaat {
 
                 square.style.setProperty("--square-background-color", isSquareHighlighted ? this.highlightedSquareColor : backgroundColor);
 
-                // Place the pieces
-
-                if (board === null || board[i][j] === null) {
-                    continue; // Skip the piece placement if the board contains no pieces or the current square is empty.
+                if (board !== null && board[i][j] !== null) {
+                    squaresWithPieces.push({ row: i, column: j });
                 }
+            }
+        }
 
-                let color = board[i][j].color === 'w' ? "white" : "black";
-                let piece = "";
+        // No need to render pieces if the board does not have any
+        if (board === null) {
+            return chessboardDiv;
+        }
 
-                switch (board[i][j].type) {
-                    case 'b': {
-                        piece = "bishop";
-                        break;
-                    }
-                    case 'k': {
-                        piece = "king";
-                        break;
-                    }
-                    case 'n': {
-                        piece = "knight";
-                        break;
-                    }
-                    case 'p': {
-                        piece = "pawn";
-                        break;
-                    }
-                    case 'q': {
-                        piece = "queen";
-                        break;
-                    }
-                    case 'r': {
-                        piece = "rook";
-                        break;
-                    }
+        // Render the pieces
+        for (let squareIndices of squaresWithPieces) {
+            let color = board[squareIndices.row][squareIndices.column].color === 'w' ? "white" : "black";
+            let piece = "";
+
+            switch (board[squareIndices.row][squareIndices.column].type) {
+                case 'b': {
+                    piece = "bishop";
+                    break;
                 }
-
-                if (board[i][j] !== null) {
-                    square.addClass("shaahmaat-chess-piece");
-                    square.addClass(`${this.chessSet}-chess-set`);
-                    square.addClass(piece);
-                    square.addClass(color);
+                case 'k': {
+                    piece = "king";
+                    break;
+                }
+                case 'n': {
+                    piece = "knight";
+                    break;
+                }
+                case 'p': {
+                    piece = "pawn";
+                    break;
+                }
+                case 'q': {
+                    piece = "queen";
+                    break;
+                }
+                case 'r': {
+                    piece = "rook";
+                    break;
                 }
             }
 
+            let square = chessboardDiv.querySelector("[data-square-coordinates='" + board[squareIndices.row][squareIndices.column].square + "'");
+
+            if (square === null) {
+                continue;
+            }
+
+            square.addClass("shaahmaat-chess-piece");
+            square.addClass(`${this.chessSet}-chess-set`);
+            square.addClass(piece);
+            square.addClass(color);
         }
+
+
+
 
         return chessboardDiv;
     }
