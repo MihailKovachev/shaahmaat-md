@@ -29,14 +29,14 @@ export default class ShaahMaat {
         this.pieces = new Map();
     }
 
-    public createChessBoardEl(boardInfo: ShaahMaatBoardInfo, size: number = 256): HTMLDivElement {
+    public createChessBoardEl(boardInfo: ShaahMaatBoardInfo): HTMLDivElement {
 
-        let squareSide = size / 8;
+        let squareSide = boardInfo.size / 8;
 
         let board = boardInfo.board;
 
         // Generate the board
-        let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": `width: ${size}px; height: ${size}px;` } });
+        let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": `width: ${boardInfo.size}px; height: ${boardInfo.size}px;` } });
 
         let squaresWithPieces = new Array<{ row: number, column: number }>();
 
@@ -116,18 +116,11 @@ export default class ShaahMaat {
 
             let square = chessboardDiv.querySelector("[data-square-coordinates='" + board[squareIndices.row][squareIndices.column].square + "'");
 
-            if (square === null) {
-                continue;
-            }
-
-            square.addClass("shaahmaat-chess-piece");
-            square.addClass(`${this.chessSet}-chess-set`);
-            square.addClass(piece);
-            square.addClass(color);
+            square!.addClass("shaahmaat-chess-piece");
+            square!.addClass(`${this.chessSet}-chess-set`);
+            square!.addClass(piece);
+            square!.addClass(color);
         }
-
-
-
 
         return chessboardDiv;
     }

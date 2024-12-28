@@ -13,14 +13,16 @@ export enum BoardOrientation {
 
 export class ShaahMaatBoardInfo {
 
-    orientation: BoardOrientation;
-    highlightedSquares: Square[];
 
     board: Chessboard;
+    orientation: BoardOrientation;
+    size: number;
+    highlightedSquares: Square[];
 
-    constructor(board: Chessboard, orientation: BoardOrientation, highlightedSquares: Square[]) {
+    constructor(board: Chessboard, orientation: BoardOrientation, size:number, highlightedSquares: Square[]) {
         this.board = board;
         this.orientation = orientation;
+        this.size = size;
         this.highlightedSquares = highlightedSquares;
     }
 

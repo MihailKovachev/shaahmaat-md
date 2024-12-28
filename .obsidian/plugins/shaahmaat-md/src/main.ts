@@ -30,7 +30,7 @@ export default class ShaahMaatPlugin extends Plugin {
 		try {
 			let parsedShaahMaat = ShaahMaatParser.parseShaahMaat(source);
 
-			el.appendChild(this.shaahmaat.createChessBoardEl(parsedShaahMaat, 256));
+			el.appendChild(this.shaahmaat.createChessBoardEl(parsedShaahMaat));
 		}
 		catch (err) {
 			el.appendChild(this.shaahmaat.renderError(err));

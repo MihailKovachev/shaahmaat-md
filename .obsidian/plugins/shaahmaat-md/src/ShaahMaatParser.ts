@@ -32,6 +32,7 @@ export class ShaahMaatParser {
 
         let board = undefined;
         let orientation = undefined;
+        let size = undefined;
         let highlightedSquares = new Array<Square>();
         let format = undefined;
 
@@ -91,6 +92,14 @@ export class ShaahMaatParser {
                         highlightedSquares.push(square  as Square);
                     }
                 }
+
+                if (header.name === "size") {
+                    if(size !== undefined) {
+                        throw new Error("Only one size header is allowed!");
+                    }
+
+                    size = parseInt(header.val);
+                }
             }
 
             // We have found the line which separates headers from notation
@@ -107,6 +116,10 @@ export class ShaahMaatParser {
             throw new Error("Missing orientation header!");
         }
 
+        if(size === undefined) {
+            size = 256;
+        }
+
         let chess = new Chess();
         if(format === "fen") {
             chess.load(gameNotation);
@@ -120,7 +133,7 @@ export class ShaahMaatParser {
 
         board = chess.board()!;
 
-        return new ShaahMaatBoardInfo(board as Chessboard, orientation, highlightedSquares);
+        return new ShaahMaatBoardInfo(board as Chessboard, orientation, size!, highlightedSquares);
     }
 
     public static parseHeader(header: string): ShaahMaatHeader {
