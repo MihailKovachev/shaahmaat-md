@@ -178,3 +178,5 @@ Adding custom chess sets is possible by modifying the `styles.css` file. You nee
 # Support
 
 If you encounter any bugs, open an issue on the [Github repository](https://github.com/MihailKovachev/shaahmaat-md). Other contributions are also welcome.
+
+ShaahMaat-md would not be possible without [chessjs](https://github.com/jhlywa/chess.js) and [cburnett](https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces)'s chess pieces.
