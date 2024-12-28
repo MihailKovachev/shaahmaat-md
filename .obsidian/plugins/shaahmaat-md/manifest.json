@@ -1,11 +1,10 @@
 {
 	"id": "shaahmaat-md",
-	"name": "Shaahmaat",
+	"name": "ShaahMaat-md",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "A plugin for rendering chess boards in Obsidian using FEN or PGN notation.",
+	"description": "Render chess positions in Obsidian.",
 	"author": "Mihail Kovachev",
 	"authorUrl": "https://github.com/MihailKovachev",
-	"fundingUrl": "",
 	"isDesktopOnly": false
 }
