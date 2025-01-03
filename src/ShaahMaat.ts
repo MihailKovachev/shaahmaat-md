@@ -1,63 +1,36 @@
-import { Chess, Color, PAWN, PieceSymbol, Square } from 'chess.js';
-
-import { App } from 'obsidian';
-
-import { BoardOrientation, Chessboard, ShaahMaatBoardInfo } from './ShaahMaatBoardInfo';
+import { BoardOrientation, ShaahMaatBoardInfo } from './ShaahMaatBoardInfo';
+import { ShaahMaatSettings } from './ShaahMaatSettings';
 
 export const COLUMNS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 export const ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
 export default class ShaahMaat {
 
-    app: App;
-
-    lightSquareColor: string;
-    darkSquareColor: string;
-    highlightedSquareColor: string;
-    annotationArrowColor: string;
-    chessSet: string;
-
-    pieces: Map<string, string>;
-
-    constructor(app: App, lightSquareColor: string, darkSquareColor: string, highlightedSquareColor: string, annotationArrowColor: string, chessSet: string) {
-        this.app = app;
-
-        this.lightSquareColor = lightSquareColor;
-        this.darkSquareColor = darkSquareColor;
-        this.highlightedSquareColor = highlightedSquareColor;
-        this.annotationArrowColor = annotationArrowColor;
-        this.chessSet = chessSet;
-
-        this.pieces = new Map();
-    }
-
-    public createChessBoardEl(boardInfo: ShaahMaatBoardInfo): HTMLDivElement {
+    public static createChessBoardElement(boardInfo: ShaahMaatBoardInfo, options: ShaahMaatSettings): HTMLDivElement {
         let board = boardInfo.board;
 
         // Generate the board
-        let chessboardDiv = createDiv({ cls: "shaahmaat-chessboard", attr: { "style": `width: ${boardInfo.size}px; height: ${boardInfo.size}px;` } });
+        let chessboardDiv = document.createElement("div");
+        chessboardDiv.addClass("shaahmaat-chessboard");
+        chessboardDiv.setAttribute("style", `width: ${boardInfo.size}px; height: ${boardInfo.size}px;`);
 
         let squaresWithPieces = new Array<{ row: number, column: number }>();
 
         for (let i = 0; i < 8; ++i) {
-
-            let row = chessboardDiv.createDiv({ cls: "shaahmaat-chessboard-row" });
+            let row = document.createElement("div");
+            row.addClass("shaahmaat-chessboard-row");
 
             // Generate the board
             for (let j = 0; j < 8; ++j) {
 
-                let backgroundColor = (i + j) % 2 == 0 ? this.lightSquareColor : this.darkSquareColor;
+                let backgroundColor = (i + j) % 2 == 0 ? options.lightSquareColor : options.darkSquareColor;
 
                 let columnCoord = boardInfo.orientation === BoardOrientation.White ? COLUMNS[j] : COLUMNS[7 - j];
                 let rowCoord = boardInfo.orientation === BoardOrientation.White ? ROWS[7 - i] : ROWS[i];
 
-                let square = row.createDiv(
-                    {
-                        cls: "shaahmaat-chessboard-square",
-                        attr: {
-                            "data-square-coordinates": `${columnCoord}${rowCoord}`
-                        }
-                    });
+                let square = document.createElement("div");
+                square.addClass("shaahmaat-chessboard-square");
+                square.setAttribute("data-square-coordinates", `${columnCoord}${rowCoord}`);
 
                 // Check if the square is highlighted
                 let isSquareHighlighted = false;
@@ -68,12 +41,16 @@ export default class ShaahMaat {
                     }
                 }
 
-                square.style.setProperty("--square-background-color", isSquareHighlighted ? this.highlightedSquareColor : backgroundColor);
+                square.style.setProperty("--square-background-color", isSquareHighlighted ? options.highlightedSquareColor : backgroundColor);
 
                 if (board !== null && board[i][j] !== null) {
                     squaresWithPieces.push({ row: i, column: j });
                 }
+
+                row.appendChild(square);
             }
+
+            chessboardDiv.appendChild(row);
         }
 
         // No need to render pieces if the board does not have any
@@ -116,25 +93,16 @@ export default class ShaahMaat {
             let square = chessboardDiv.querySelector("[data-square-coordinates='" + board[squareIndices.row][squareIndices.column].square + "'");
 
             square!.addClass("shaahmaat-chess-piece");
-            square!.addClass(`${this.chessSet}-chess-set`);
+            square!.addClass(`${options.chessSet}-chess-set`);
             square!.addClass(piece);
             square!.addClass(color);
         }
 
         // Render arrows
-        let arrowsSvg = createSvg('svg');
+        let arrowsSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         arrowsSvg.setAttribute("width", `${boardInfo.size}px`);
         arrowsSvg.setAttribute("height", `${boardInfo.size}px`)
         arrowsSvg.addClass("shaahmaat-arrows");
-
-        /*
-        let defs = createSvg("defs");
-        let arrowHeadMarker = createSvg("marker");
-        let arrowHeadPolygon = createSvg("polygon");
-        arrowHeadPolygon.setAttribute("")*/
-
-
-        arrowsSvg.appendChild(createSvg("defs"));
 
         for (let annotation of boardInfo.arrows) {
             let fromDiv = chessboardDiv.querySelector("[data-square-coordinates='" + annotation.from + "'");
@@ -200,13 +168,12 @@ export default class ShaahMaat {
             const gx = startX;
             const gy = fy;
 
-            let arrow = createSvg("polygon");
+            let arrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
             arrow.setAttribute("points", `${ax},${ay} ${bx},${by} ${cx},${cy} ${dx},${dy} ${ex},${ey} ${fx},${fy} ${gx},${gy}`);
             arrow.setAttribute("transform", `rotate(${Math.atan2(endY - startY, endX - startX) * (180 / Math.PI)}, ${startX}, ${startY})`)
-            arrow.setAttribute("fill", this.annotationArrowColor);
+            arrow.setAttribute("fill", options.arrowColor);
 
             arrowsSvg.appendChild(arrow);
-
         }
 
         chessboardDiv.appendChild(arrowsSvg);
@@ -214,7 +181,11 @@ export default class ShaahMaat {
         return chessboardDiv;
     }
 
-    public renderError(err: Error): HTMLElement {
-        return createEl('p', { cls: "shaahmaat-error", text: `Error: ${err.stack} ${err.message}` });
+    public static renderError(err: Error): HTMLElement {
+        let errorElement = document.createElement("p");
+        errorElement.addClass("shaahmaat-error");
+        errorElement.setText(`Error: ${err.stack} ${err.message}`);
+
+        return errorElement;
     }
 }

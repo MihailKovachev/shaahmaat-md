@@ -1,25 +1,20 @@
-import { Chess } from 'chess.js';
-import { App, Editor, HexString, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { MarkdownPostProcessorContext, Plugin} from 'obsidian';
 
 import ShaahMaat from './ShaahMaat';
 import { ShaahMaatParser } from './ShaahMaatParser';
-import { DEFAULT_SETTINGS, ShaahMaatSettings, ShaahMaatSettingTab } from './ShaahMaatSettings';
-
-const HEADERS = ["orientation", "format"];
+import { DEFAULT_SETTINGS, ShaahMaatSettings } from './ShaahMaatSettings';
+import { ShaahMaatSettingTab } from './ShaahMaatSettingTab';
 
 const CHESS_SETS = ["cburnett"];
 
 export default class ShaahMaatPlugin extends Plugin {
 	settings: ShaahMaatSettings;
-	shaahmaat: ShaahMaat;
 
 	async onload() {
 
 		await this.loadSettings();
 
 		this.addSettingTab(new ShaahMaatSettingTab(this.app, this, CHESS_SETS));
-
-		this.shaahmaat = new ShaahMaat(this.app, this.settings.lightSquareColor, this.settings.darkSquareColor, this.settings.highlightedSquareColor, this.settings.arrowColor, this.settings.chessSet);
 
 		this.registerMarkdownCodeBlockProcessor('shaahmaat', this.postProcessShaahMaat.bind(this));
 
@@ -30,10 +25,10 @@ export default class ShaahMaatPlugin extends Plugin {
 		try {
 			let parsedShaahMaat = ShaahMaatParser.parseShaahMaat(source);
 
-			el.appendChild(this.shaahmaat.createChessBoardEl(parsedShaahMaat));
+			el.appendChild(ShaahMaat.createChessBoardElement(parsedShaahMaat, this.settings));
 		}
 		catch (err) {
-			el.appendChild(this.shaahmaat.renderError(err));
+			el.appendChild(ShaahMaat.renderError(err));
 		}
 	}
 

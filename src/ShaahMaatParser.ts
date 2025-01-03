@@ -85,7 +85,7 @@ export class ShaahMaatParser {
                     let squares = header.val.trim().split(' ');
 
                     for (let square of squares) {
-                        if (square.length !== 2 || !COLUMNS.contains(square.charAt(0)) || !ROWS.contains(square.charAt(1))) {
+                        if (square.length !== 2 || !COLUMNS.includes(square.charAt(0)) || !ROWS.includes(square.charAt(1))) {
                             throw new Error("Invalid hightlight header!");
                         }
 
@@ -111,12 +111,12 @@ export class ShaahMaatParser {
 
                     for (let arrowstring of arrowstrings) {
                         if (arrowstring.length !== 6
-                            || !COLUMNS.contains(arrowstring.charAt(0))
-                            || !ROWS.contains(arrowstring.charAt(1))
+                            || !COLUMNS.includes(arrowstring.charAt(0))
+                            || !ROWS.includes(arrowstring.charAt(1))
                             || arrowstring.charAt(2) !== '-'
                             || arrowstring.charAt(3) !== '>'
-                            || !COLUMNS.contains(arrowstring.charAt(4))
-                            || !ROWS.contains(arrowstring.charAt(5))) {
+                            || !COLUMNS.includes(arrowstring.charAt(4))
+                            || !ROWS.includes(arrowstring.charAt(5))) {
                             throw new Error("Invalid annotation header!");
                         }
 
