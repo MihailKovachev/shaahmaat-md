@@ -90,7 +90,7 @@ export default class ShaahMaat {
                 }
             }
 
-            let square = chessboardDiv.querySelector("[data-square-coordinates='" + board[squareIndices.row][squareIndices.column].square + "'");
+            let square = chessboardDiv.querySelector("[data-square-coordinates='" + board[squareIndices.row][squareIndices.column].square + "']");
 
             square!.addClass("shaahmaat-chess-piece");
             square!.addClass(`${options.chessSet}-chess-set`);
