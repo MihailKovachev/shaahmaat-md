@@ -7,9 +7,7 @@ export const ROWS = ['1', '2', '3', '4', '5', '6', '7', '8'];
 export default class ShaahMaat {
 
     public static createChessBoardElement(boardInfo: ShaahMaatBoardInfo, options: ShaahMaatSettings): HTMLDivElement {
-        let board = boardInfo.board;
-
-        // Generate the board
+        
         let chessboardDiv = document.createElement("div");
         chessboardDiv.addClass("shaahmaat-chessboard");
         chessboardDiv.setAttribute("style", `width: ${boardInfo.size}px; height: ${boardInfo.size}px;`);
@@ -20,7 +18,6 @@ export default class ShaahMaat {
             let row = document.createElement("div");
             row.addClass("shaahmaat-chessboard-row");
 
-            // Generate the board
             for (let j = 0; j < 8; ++j) {
 
                 let backgroundColor = (i + j) % 2 == 0 ? options.lightSquareColor : options.darkSquareColor;
@@ -43,7 +40,7 @@ export default class ShaahMaat {
 
                 square.style.setProperty("--square-background-color", isSquareHighlighted ? options.highlightedSquareColor : backgroundColor);
 
-                if (board !== null && board[i][j] !== null) {
+                if (boardInfo.board !== null && boardInfo.board[i][j] !== null) {
                     squaresWithPieces.push({ row: i, column: j });
                 }
 
@@ -53,17 +50,17 @@ export default class ShaahMaat {
             chessboardDiv.appendChild(row);
         }
 
-        // No need to render pieces if the board does not have any
-        if (board === null) {
+        // No need to render pieces if the boardInfo.board does not have any
+        if (boardInfo.board === null) {
             return chessboardDiv;
         }
 
         // Render the pieces
         for (let squareIndices of squaresWithPieces) {
-            let color = board[squareIndices.row][squareIndices.column].color === 'w' ? "white" : "black";
+            let color = boardInfo.board[squareIndices.row][squareIndices.column].color === 'w' ? "white" : "black";
             let piece = "";
 
-            switch (board[squareIndices.row][squareIndices.column].type) {
+            switch (boardInfo.board[squareIndices.row][squareIndices.column].type) {
                 case 'b': {
                     piece = "bishop";
                     break;
@@ -90,7 +87,7 @@ export default class ShaahMaat {
                 }
             }
 
-            let square = chessboardDiv.querySelector("[data-square-coordinates='" + board[squareIndices.row][squareIndices.column].square + "']");
+            let square = chessboardDiv.querySelector("[data-square-coordinates='" + boardInfo.board[squareIndices.row][squareIndices.column].square + "']");
 
             square!.addClass("shaahmaat-chess-piece");
             square!.addClass(`${options.chessSet}-chess-set`);
