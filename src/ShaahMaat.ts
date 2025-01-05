@@ -38,7 +38,7 @@ export default class ShaahMaat {
                     }
                 }
 
-                square.style.setProperty("--square-background-color", isSquareHighlighted ? options.highlightedSquareColor : backgroundColor);
+                square.style.setProperty("--square-background-color", isSquareHighlighted ? `color-mix(in srgb, ${backgroundColor}, ${options.highlightedSquareColor} 80%)` : backgroundColor);
 
                 if (boardInfo.board !== null && boardInfo.board[i][j] !== null) {
                     squaresWithPieces.push({ row: i, column: j });
