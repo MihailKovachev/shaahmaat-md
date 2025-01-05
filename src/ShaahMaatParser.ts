@@ -122,7 +122,7 @@ export class ShaahMaatParser {
 
                         let arrowsquares = arrowstring.split('->');
 
-                        arrows.push({from: arrowsquares[0] as Square, to: arrowsquares[1] as Square});
+                        arrows.push({ from: arrowsquares[0] as Square, to: arrowsquares[1] as Square });
                     }
 
                 }
@@ -148,10 +148,10 @@ export class ShaahMaatParser {
 
         let chess = new Chess();
         if (format === "fen") {
-            chess.load(gameNotation);
+            chess.load(gameNotation, { skipValidation: true });
         }
         else if (format === "pgn") {
-            chess.loadPgn(gameNotation);
+            chess.loadPgn(gameNotation, { strict: false });
         }
         else if (format === undefined) {
             throw new Error("Missing format header!");
