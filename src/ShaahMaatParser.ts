@@ -33,11 +33,13 @@ export class ShaahMaatParser {
         let board = undefined;
         let orientation = undefined;
         let size = undefined;
+        let showCoordinates = undefined;
         let highlightedSquares = new Array<Square>();
         let arrows = new Array<Arrow>();
         let format = undefined;
 
         let firstHeaderFound = false;
+
 
         for (let i = 0; i < lines.length; ++i) {
 
@@ -124,7 +126,20 @@ export class ShaahMaatParser {
 
                         arrows.push({ from: arrowsquares[0] as Square, to: arrowsquares[1] as Square });
                     }
+                }
 
+                if (header.name === "showCoordinates") {
+                    if (showCoordinates !== undefined) {
+                        throw new Error("Only one showCoordinates header is allowed!");
+                    }
+
+                    if (header.val === "true") {
+                        showCoordinates = true;
+                    } else if (header.val === "false") {
+                        showCoordinates = false;
+                    } else {
+                        throw new Error("Invalid showCoordinates header! Value must be true or false");
+                    }
                 }
             }
 
@@ -159,7 +174,7 @@ export class ShaahMaatParser {
 
         board = chess.board()!;
 
-        return new ShaahMaatBoardInfo(board as Chessboard, orientation, size!, highlightedSquares, arrows);
+        return new ShaahMaatBoardInfo(board as Chessboard, orientation, size!, showCoordinates!, highlightedSquares, arrows);
     }
 
     public static parseHeader(header: string): ShaahMaatHeader {

@@ -44,6 +44,34 @@ export default class ShaahMaat {
                     squaresWithPieces.push({ row: i, column: j });
                 }
 
+                if (boardInfo.showCoordinates) {
+                    // Squares on the last row get column labels
+                    if (i == 7) {
+                        let columnLabel = document.createElement("p");
+                        columnLabel.setText(columnCoord);
+                        columnLabel.addClass("shaahmaat-column-coordinate-label");
+
+                        // The reverse colour
+                        columnLabel.style.color = (i + j) % 2 == 0 ? options.darkSquareColor : options.lightSquareColor;
+                        columnLabel.style.setProperty("--board-square-size", (boardInfo.size * 0.125).toString() + "px");
+
+                        square.appendChild(columnLabel);
+                    }
+
+                    // Squares on the last column get row labels
+                    if (j == 7) {
+                        let rowLabel = document.createElement("p");
+                        rowLabel.setText(rowCoord);
+                        rowLabel.addClass("shaahmaat-row-coordinate-label");
+
+                        // The reverse colour
+                        rowLabel.style.color = (i + j) % 2 == 0 ? options.darkSquareColor : options.lightSquareColor;
+                        rowLabel.style.setProperty("--board-square-size", (boardInfo.size * 0.125).toString() + "px");
+
+                        square.appendChild(rowLabel);
+                    }
+                }
+
                 row.appendChild(square);
             }
 
